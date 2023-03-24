@@ -1,0 +1,7 @@
+models/random/**/*.prism
+data.json
+data.json.gz
+
+.idea
+
+__pycache__

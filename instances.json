@@ -1,0 +1,8 @@
+[
+  {
+    "key": "random_act1_101",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_101.prism",
+    "prop": "models/random/models.props",
+    "index": 0
+  }
+]
