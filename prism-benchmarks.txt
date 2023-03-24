@@ -1,0 +1,27 @@
+# prism-auto -e avoid dice hallway_human investors safe_nav task_graph
+
+prism avoid/avoid.prism -const X_MAX=10,Y_MAX=10 avoid/exit.props
+prism avoid/avoid.prism -const X_MAX=10,Y_MAX=10 avoid/find.props
+prism avoid/avoid.prism -const X_MAX=15,Y_MAX=15 avoid/exit.props
+prism avoid/avoid.prism -const X_MAX=15,Y_MAX=15 avoid/find.props
+prism avoid/avoid.prism -const X_MAX=20,Y_MAX=20 avoid/exit.props
+prism avoid/avoid.prism -const X_MAX=20,Y_MAX=20 avoid/find.props
+prism dice/dice.prism -const N=25 dice/p1wins.props
+prism dice/dice.prism -const N=50 dice/p1wins.props
+prism dice/dice.prism -const N=100 dice/p1wins.props
+prism hallway_human/hallway_human.prism -const X_MAX=5,Y_MAX=5 hallway_human/save.props
+prism hallway_human/hallway_human.prism -const X_MAX=10,Y_MAX=10 hallway_human/save.props
+prism hallway_human/hallway_human.prism -const X_MAX=15,Y_MAX=15 hallway_human/save.props
+prism investors/investors2.prism -const vmax=10 investors/greater.props
+prism investors/investors2.prism -const vmax=20 investors/greater.props
+prism investors/investors2.prism -const vmax=40 investors/greater.props
+prism investors/investors3.prism -const vmax=10 investors/greater.props
+prism investors/investors3.prism -const vmax=20 investors/greater.props
+prism investors/investors3.prism -const vmax=40 investors/greater.props
+prism safe_nav/safe_nav8x8_D.prism safe_nav/reach.props
+prism safe_nav/safe_nav8x8_C.prism safe_nav/reach.props
+prism safe_nav/safe_nav8x8_B.prism safe_nav/reach.props
+prism safe_nav/safe_nav8x8_A.prism safe_nav/reach.props
+prism task_graph/task_graph6.prism -const k1=10,k2=10 task_graph/time.props
+prism task_graph/task_graph6.prism -const k1=15,k2=15 task_graph/time.props
+prism task_graph/task_graph6.prism -const k1=20,k2=20 task_graph/time.props

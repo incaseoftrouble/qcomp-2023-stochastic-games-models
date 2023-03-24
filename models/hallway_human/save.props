@@ -1,0 +1,2 @@
+// Maximum probability of the agent saving the human is 1
+"save": <<p1>> P>=1 [ F "saved" ];
