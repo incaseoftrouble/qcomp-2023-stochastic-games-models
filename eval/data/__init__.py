@@ -15,7 +15,6 @@ class Instance(object):
     prism_model: pathlib.Path
     prism_properties: pathlib.Path
     constants: Dict[str, str]
-    property_index: int
 
     @staticmethod
     def create_hash(instance: "Instance"):
@@ -29,7 +28,6 @@ class Instance(object):
         for c, v in sorted(instance.constants.items()):
             hasher.update(c.encode())
             hasher.update(v.encode())
-        hasher.update(bytes(instance.property_index))
         return base64.b64encode(hasher.digest()).decode()
 
     @cached_property
@@ -43,8 +41,17 @@ class Instance(object):
             prism_model=pathlib.Path(data["model"]),
             prism_properties=pathlib.Path(data["prop"]),
             constants=data.get("constants", {}),
-            property_index=data["index"],
         )
+
+    def to_json(self):
+        data = {
+            "key": self.key,
+            "model": str(self.prism_model),
+            "prop": str(self.prism_properties),
+        }
+        if self.constants:
+            data["constants"] = self.constants
+        return data
 
 
 class ErrorType(enum.Enum):

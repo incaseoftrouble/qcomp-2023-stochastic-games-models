@@ -1,8 +1,470 @@
 [
   {
+    "key": "avoid_10_10_exit",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/exit.props",
+    "constants": {
+      "X_MAX": "10",
+      "Y_MAX": "10"
+    }
+  },
+  {
+    "key": "avoid_10_10_find",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/find.props",
+    "constants": {
+      "X_MAX": "10",
+      "Y_MAX": "10"
+    }
+  },
+  {
+    "key": "avoid_15_15_exit",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/exit.props",
+    "constants": {
+      "X_MAX": "15",
+      "Y_MAX": "15"
+    }
+  },
+  {
+    "key": "avoid_15_15_find",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/find.props",
+    "constants": {
+      "X_MAX": "15",
+      "Y_MAX": "15"
+    }
+  },
+  {
+    "key": "avoid_20_20_exit",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/exit.props",
+    "constants": {
+      "X_MAX": "20",
+      "Y_MAX": "20"
+    }
+  },
+  {
+    "key": "avoid_20_20_find",
+    "model": "models/avoid/avoid.prism",
+    "prop": "models/avoid/find.props",
+    "constants": {
+      "X_MAX": "20",
+      "Y_MAX": "20"
+    }
+  },
+  {
+    "key": "dice_25_p1wins",
+    "model": "models/dice/dice.prism",
+    "prop": "models/dice/p1wins.props",
+    "constants": {
+      "N": "25"
+    }
+  },
+  {
+    "key": "dice_50_p1wins",
+    "model": "models/dice/dice.prism",
+    "prop": "models/dice/p1wins.props",
+    "constants": {
+      "N": "50"
+    }
+  },
+  {
+    "key": "dice_100_p1wins",
+    "model": "models/dice/dice.prism",
+    "prop": "models/dice/p1wins.props",
+    "constants": {
+      "N": "100"
+    }
+  },
+  {
+    "key": "hallway_human_5_5_save",
+    "model": "models/hallway_human/hallway_human.prism",
+    "prop": "models/hallway_human/save.props",
+    "constants": {
+      "X_MAX": "5",
+      "Y_MAX": "5"
+    }
+  },
+  {
+    "key": "hallway_human_10_10_save",
+    "model": "models/hallway_human/hallway_human.prism",
+    "prop": "models/hallway_human/save.props",
+    "constants": {
+      "X_MAX": "10",
+      "Y_MAX": "10"
+    }
+  },
+  {
+    "key": "hallway_human_15_15_save",
+    "model": "models/hallway_human/hallway_human.prism",
+    "prop": "models/hallway_human/save.props",
+    "constants": {
+      "X_MAX": "15",
+      "Y_MAX": "15"
+    }
+  },
+  {
+    "key": "investors2_10_greater",
+    "model": "models/investors/investors2.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "10"
+    }
+  },
+  {
+    "key": "investors2_20_greater",
+    "model": "models/investors/investors2.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "20"
+    }
+  },
+  {
+    "key": "investors2_40_greater",
+    "model": "models/investors/investors2.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "40"
+    }
+  },
+  {
+    "key": "investors3_10_greater",
+    "model": "models/investors/investors3.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "10"
+    }
+  },
+  {
+    "key": "investors3_20_greater",
+    "model": "models/investors/investors3.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "20"
+    }
+  },
+  {
+    "key": "investors3_40_greater",
+    "model": "models/investors/investors3.prism",
+    "prop": "models/investors/greater.props",
+    "constants": {
+      "vmax": "40"
+    }
+  },
+  {
+    "key": "random_act1_114",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_114.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_102",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_102.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_103",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_103.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_124",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_124.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_110",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_110.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_108",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_108.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_120",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_120.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_107",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_107.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_127",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_127.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_111",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_111.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_106",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_106.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_117",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_117.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_129",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_129.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_121",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_121.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_118",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_118.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_125",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_125.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_104",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_104.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_126",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_126.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_130",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_130.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_119",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_119.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_123",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_123.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_109",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_109.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_105",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_105.prism",
+    "prop": "models/random/random.props"
+  },
+  {
     "key": "random_act1_101",
     "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_101.prism",
-    "prop": "models/random/models.props",
-    "index": 0
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_112",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_112.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_115",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_115.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_113",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_113.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_116",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_116.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_128",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_128.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act1_122",
+    "model": "models/random/act1/RANDOM_Size_10000_MinAct_1_MinTransProb_0.001_Model_122.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_32",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_32.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_5",
+    "model": "models/random/act10/RANDOM_Size_10002_MinAct_10_MinTransProb_0.0001_Model_5.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_22",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_22.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_15",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_15.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_10",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_10.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_29",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_29.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_2",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_2.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_3",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_3.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_1",
+    "model": "models/random/act10/RANDOM_Size_10002_MinAct_10_MinTransProb_0.0001_Model_1.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_11",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_11.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_6",
+    "model": "models/random/act10/RANDOM_Size_10002_MinAct_10_MinTransProb_0.0001_Model_6.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_9",
+    "model": "models/random/act10/RANDOM_Size_10002_MinAct_10_MinTransProb_0.0001_Model_9.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_30",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_30.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_13",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_13.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_17",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_17.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_4",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_4.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_14",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_14.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_16",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_16.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_20",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_20.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_7",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_7.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_28",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_28.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_23",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_23.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_26",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_26.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_31",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_31.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_33",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_33.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_27",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_27.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_24",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_24.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_19",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_19.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_21",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_21.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_8",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_8.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_18",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_18.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_12",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_12.prism",
+    "prop": "models/random/random.props"
+  },
+  {
+    "key": "random_act10_25",
+    "model": "models/random/act10/RANDOM_Size_10000_MinAct_10_MinTransProb_0.0001_Model_25.prism",
+    "prop": "models/random/random.props"
   }
 ]

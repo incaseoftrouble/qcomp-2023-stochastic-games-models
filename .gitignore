@@ -1,6 +1,7 @@
 models/random/**/*.prism
 data.json
 data.json.gz
+plot*
 
 .idea
 
