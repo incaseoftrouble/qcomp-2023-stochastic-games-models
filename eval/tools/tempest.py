@@ -37,6 +37,7 @@ class Tempest(Tool):
         model_path: pathlib.Path,
         constants: Dict[str, str],
         properties_path: pathlib.Path,
+        memory_limit: int,
     ):
         invocation = [
             "storm",

@@ -108,6 +108,10 @@ class Result(abc.ABC):
             )
         raise KeyError(data_type)
 
+    @property
+    def success(self):
+        return isinstance(self, Termination) and self.outcome is not None
+
 
 @dataclasses.dataclass
 class Timeout(Result):

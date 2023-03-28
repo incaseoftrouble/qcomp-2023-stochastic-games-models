@@ -27,18 +27,18 @@ from eval.data import (
 from eval.tools import PET, Tool, PRISMGames, PRISMGamesExtensions, Tempest
 
 progressbar.streams.wrap_stderr()
-logging.basicConfig()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("main")
 
 TOOLS = [
-    PET(True),
+    # PET(True),
     PET(False),
-    PRISMGames("explicit"),
+    # PRISMGames("explicit"),
     # PRISMGames("mtbdd"),
-    PRISMGamesExtensions(PRISMGamesExtensions.Method.INTERVAL_ITERATION),
+    # PRISMGamesExtensions(PRISMGamesExtensions.Method.INTERVAL_ITERATION),
     # PRISMGamesExtensions(PRISMGamesExtensions.Method.OPTIMISTIC_VALUE_ITERATION),
-    PRISMGamesExtensions(PRISMGamesExtensions.Method.WIDEST_PATH),
-    Tempest(),
+    # PRISMGamesExtensions(PRISMGamesExtensions.Method.WIDEST_PATH),
+    # Tempest(),
 ]
 
 
@@ -80,11 +80,11 @@ def recognize_error(stdout: str, stderr: str, exit_code: int, tool: Tool):
 
 
 def run(
-    client: docker.DockerClient,
-    tool: Tool,
-    instance: Instance,
-    memory: int,
-    timeout: float,
+        client: docker.DockerClient,
+        tool: Tool,
+        instance: Instance,
+        memory: int,
+        timeout: float,
 ) -> Result:
     assert memory > 1024
 
@@ -94,19 +94,20 @@ def run(
         pathlib.Path("/tmp/model.prism"),
         instance.constants,
         pathlib.Path("/tmp/model.props"),
+        memory
     )
     import docker.models.containers
 
     container: docker.models.containers.Container = client.containers.create(
         image=tool.docker_image_name,
         command=[
-            "/usr/bin/timeout",
-            str(timeout + 1),
-            "/usr/bin/time",
-            "-f",
-            "%C\n%x,%e,%U,%M",
-        ]
-        + invocation,
+                    "/usr/bin/timeout",
+                    str(timeout + 1),
+                    "/usr/bin/time",
+                    "-f",
+                    "%C\n%x,%e,%U,%M",
+                ]
+                + invocation,
         cpuset_cpus="1",
         mem_limit=f"{memory}m",
         mem_swappiness=0,
@@ -191,9 +192,9 @@ def run(
         try:
             container.wait(timeout=10)
         except (
-            docker.errors.APIError,
-            requests.exceptions.ReadTimeout,
-            requests.exceptions.ConnectionError,
+                docker.errors.APIError,
+                requests.exceptions.ReadTimeout,
+                requests.exceptions.ConnectionError,
         ):
             pass
         try:
@@ -240,41 +241,46 @@ def main(args):
 
     timeout = args.timeout
     to_execute: List[Tuple[Instance, Tool]] = []
+
+    def should_execute(i: Instance, t: Tool, e: Experiment):
+        if args.force or t.unique_key not in e.tool_executions:
+            return True
+        ex = e.tool_executions[tool.unique_key]
+        if args.repeat_before and ex.timestamp < args.repeat_before:
+            return True
+        r = ex.result
+        if isinstance(r, Timeout) and r.time < timeout:
+            return True
+        if experiment.input_hash != instance.hash:
+            return True
+        return False
+
     for instance in instances:
         if instance.key in experiments:
             experiment: Experiment = experiments[instance.key]
             for tool in TOOLS:
-                if tool.unique_key not in experiment.tool_executions:
+                if should_execute(instance, tool, experiment):
                     to_execute.append((instance, tool))
-                    continue
-                execution = experiment.tool_executions[tool.unique_key]
-                if args.repeat_before and execution.timestamp < args.repeat_before:
-                    to_execute.append((instance, tool))
-                    continue
-                result = execution.result
-                if isinstance(result, Timeout) and result.time < timeout:
-                    to_execute.append((instance, tool))
-                    continue
-                if experiment.input_hash != instance.hash:
-                    to_execute.append((instance, tool))
-                    continue
         else:
             for tool in TOOLS:
                 to_execute.append((instance, tool))
+    if not to_execute:
+        logger.info("Nothing to execute")
+        return
 
     logger.info(
         "Executing %d out of %d instances",
-        len(instance_data) * len(TOOLS),
         len(to_execute),
+        len(instance_data) * len(TOOLS),
     )
 
     try:
         widgets = [
-            progressbar.SimpleProgress(),
-            " --- ",
-            progressbar.Variable("model", format="Model: {formatted_value}", width=30),
-            " ",
-            progressbar.Variable("tool", format="Tool: {formatted_value}", width=15),
+            "Done: ", progressbar.SimpleProgress(),
+            " --- Current: ",
+            progressbar.Variable("model", format="model {formatted_value}", width=max(len(instance.key) for instance, _ in to_execute)),
+            ", ",
+            progressbar.Variable("tool", format="tool {formatted_value}", width=max(len(tool.unique_key) for _, tool in to_execute)),
             " ",
             progressbar.Bar(),
             " ",
@@ -283,14 +289,14 @@ def main(args):
             progressbar.ETA(),
         ]
         with progressbar.ProgressBar(
-            min_value=1,
-            max_value=len(to_execute),
-            redirect_stdout=True,
-            widgets=widgets,
-            poll_interval=0.1,
+                min_value=0,
+                max_value=len(to_execute),
+                redirect_stdout=True,
+                widgets=widgets,
+                poll_interval=0.1,
         ) as bar:
             for i, (instance, tool) in enumerate(to_execute):
-                bar.update(i + 1, model=instance.key, tool=tool.unique_key)
+                bar.update(i, model=instance.key, tool=tool.unique_key)
 
                 result = run(client, tool, instance, args.memory, args.timeout)
                 execution = Execution(time.time(), result)
@@ -324,6 +330,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--memory", type=int, help="Memory limit (in MB)", default=8 * 1024
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Force evaluation of tools"
     )
     parser.add_argument(
         "--repeat-before",

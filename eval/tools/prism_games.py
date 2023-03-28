@@ -47,6 +47,7 @@ class PRISMGames(PRISMTool):
         model_path: pathlib.Path,
         constants: Dict[str, str],
         properties_path: pathlib.Path,
+        memory_limit: int,
     ):
         invocation = [
             "prism",
@@ -57,6 +58,10 @@ class PRISMGames(PRISMTool):
             f"--{self.engine}",
             "-epsilon",
             "1e-6",
+            "-javamaxmem",
+            f"{memory_limit - 128}m",
+            "-cuddmaxmem",
+            f"{memory_limit / 2}m",
         ]
         if constants:
             invocation.extend(
@@ -96,6 +101,7 @@ class PRISMGamesExtensions(PRISMTool):
         model_path: pathlib.Path,
         constants: Dict[str, str],
         properties_path: pathlib.Path,
+        memory_limit: int,
     ):
         invocation = [
             "prism",
@@ -105,6 +111,10 @@ class PRISMGamesExtensions(PRISMTool):
             "1",
             "-epsilon",
             "1e-6",
+            "-javamaxmem",
+            f"{memory_limit - 128}m",
+            "-cuddmaxmem",
+            f"{memory_limit / 2}m",
         ] + self.method.invocation
         if constants:
             invocation.extend(
