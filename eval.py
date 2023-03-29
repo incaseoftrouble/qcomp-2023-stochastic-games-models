@@ -1,13 +1,17 @@
 import argparse
+import datetime
 import gzip
+import inspect
 import json
 import logging
 import pathlib
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Collection, List, Tuple
 
+import dateutil.parser
 import docker
 import docker.errors
 import progressbar
@@ -29,16 +33,17 @@ from eval.tools import PET, Tool, PRISMGames, PRISMGamesExtensions, Tempest
 progressbar.streams.wrap_stderr()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("main")
+logger.setLevel(logging.DEBUG)
 
 TOOLS = [
-    # PET(True),
+    PET(True),
     PET(False),
-    # PRISMGames("explicit"),
-    # PRISMGames("mtbdd"),
-    # PRISMGamesExtensions(PRISMGamesExtensions.Method.INTERVAL_ITERATION),
-    # PRISMGamesExtensions(PRISMGamesExtensions.Method.OPTIMISTIC_VALUE_ITERATION),
-    # PRISMGamesExtensions(PRISMGamesExtensions.Method.WIDEST_PATH),
-    # Tempest(),
+    PRISMGames("explicit"),
+    PRISMGames("mtbdd"),
+    PRISMGamesExtensions(PRISMGamesExtensions.Method.INTERVAL_ITERATION),
+    PRISMGamesExtensions(PRISMGamesExtensions.Method.OPTIMISTIC_VALUE_ITERATION),
+    PRISMGamesExtensions(PRISMGamesExtensions.Method.WIDEST_PATH),
+    Tempest(),
 ]
 
 
@@ -111,7 +116,7 @@ def run(
         cpuset_cpus="1",
         mem_limit=f"{memory}m",
         mem_swappiness=0,
-        environment={"JAVA_OPTS": f"-Xmx{memory - 128}m -Xms{memory - 256}m"},
+        environment={"JAVA_OPTS": f"-Xmx{memory - 128}m"},
         volumes={
             str(instance.prism_model.absolute()): {
                 "bind": "/tmp/model.prism",
@@ -204,22 +209,26 @@ def run(
 
 
 def check_docker_images(client: docker.DockerClient, tools: Collection[Tool]):
-    required_tags = {tool.docker_image_name for tool in tools}
+    required_tags = defaultdict(set)
+    for tool in tools:
+        required_tags[tool.docker_image_name].add(tool)
+
+    tool_image_ages = {}
 
     for image in client.images.list():
         image: Image
         for tag in image.tags:
             if tag in required_tags:
-                required_tags.remove(tag)
+                tools = required_tags.pop(tag)
+                for tool in tools:
+                    tool_image_ages[tool] = dateutil.parser.isoparse(image.attrs["Created"])
 
     if required_tags:
         raise KeyError(f"Images {' '.join(sorted(required_tags))} missing")
+    return tool_image_ages
 
 
 def main(args):
-    client = docker.from_env()
-    check_docker_images(client, TOOLS)
-
     if args.data.exists():
         with args.data.open("rt") as f:
             if args.data.name.endswith(".gz"):
@@ -239,30 +248,45 @@ def main(args):
         if not instance.prism_properties.exists():
             raise KeyError(instance.prism_properties)
 
+    client = docker.from_env()
+    image_ages = check_docker_images(client, TOOLS)
+
+    class_hash = {c: hash(inspect.getsource(c)) for c in set(tool.__class__ for tool in TOOLS)}
+    tool_hashes = {tool: class_hash[tool.__class__] for tool in TOOLS}
+
     timeout = args.timeout
     to_execute: List[Tuple[Instance, Tool]] = []
 
-    def should_execute(i: Instance, t: Tool, e: Experiment):
+    def should_execute(i: Instance, t: Tool, e: Experiment | None):
+        if e is None:
+            return True
         if args.force or t.unique_key not in e.tool_executions:
             return True
         ex = e.tool_executions[tool.unique_key]
         if args.repeat_before and ex.timestamp < args.repeat_before:
             return True
+        if ex.tool_hash != tool_hashes[t]:
+            logger.debug("Adding %s for %s: Definition hash differs", i, t)
+            return True
+        if ex.timestamp < image_ages[t].timestamp():
+            logger.debug("Adding %s for %s: Docker image newer than experiment", i, t)
+            return True
         r = ex.result
-        if isinstance(r, Timeout) and r.time < timeout:
+        if isinstance(r, Timeout) and r.time - 5 < timeout:
+            logger.debug("Adding %s for %s: Previous timeout execution smaller than timeout", i, t)
             return True
         if experiment.input_hash != instance.hash:
+            logger.debug("Adding %s for %s: Input hash mismatch", i, t)
             return True
+        logger.debug("Skipping %s for %s", i, t)
         return False
 
+    count = 0
     for instance in instances:
-        if instance.key in experiments:
-            experiment: Experiment = experiments[instance.key]
-            for tool in TOOLS:
-                if should_execute(instance, tool, experiment):
-                    to_execute.append((instance, tool))
-        else:
-            for tool in TOOLS:
+        experiment: Experiment | None = experiments.get(instance.key, None)
+        for tool in TOOLS:
+            count += 1
+            if should_execute(instance, tool, experiment):
                 to_execute.append((instance, tool))
     if not to_execute:
         logger.info("Nothing to execute")
@@ -270,8 +294,7 @@ def main(args):
 
     logger.info(
         "Executing %d out of %d instances",
-        len(to_execute),
-        len(instance_data) * len(TOOLS),
+        len(to_execute), count
     )
 
     try:
@@ -299,7 +322,7 @@ def main(args):
                 bar.update(i, model=instance.key, tool=tool.unique_key)
 
                 result = run(client, tool, instance, args.memory, args.timeout)
-                execution = Execution(time.time(), result)
+                execution = Execution(time.time(), tool_hashes[tool], result)
                 if instance.key not in experiments:
                     experiments[instance.key] = Experiment(
                         instance.key, instance.hash, dict()

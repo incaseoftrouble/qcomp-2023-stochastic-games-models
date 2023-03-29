@@ -62,6 +62,8 @@ def load_prism(args):
             data = line.split()
             model = data[0]
             if data[1] == "-const":
+                if len(data) != 4:
+                    raise ValueError(f"Cannot parse line {line}")
                 constants_string = data[2]
                 constants = dict()
                 for pair in constants_string.split(","):
@@ -69,6 +71,8 @@ def load_prism(args):
                     constants[key] = value
                 properties = data[3]
             else:
+                if len(data) != 2:
+                    raise ValueError(f"Cannot parse line {line}")
                 constants = {}
                 properties = data[1]
 

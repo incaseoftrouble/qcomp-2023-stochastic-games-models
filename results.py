@@ -17,7 +17,7 @@ def main(args):
         result_data = json.load(f)
     results = [Experiment.parse(d) for d in result_data]
 
-    tools = {"tempest", "pet", "prism-games-explicit", "prism-games-mtbdd", "prism-games-extension-ii", "prism-games-extension-wp"}
+    tools = {"tempest", "pet", "prism-games-explicit", "prism-games-mtbdd", "prism-games-extension-ii", "prism-games-extension-wp", "prism-games-extension-ovi"}
 
     outcomes = []
     values = defaultdict(dict)
@@ -64,9 +64,9 @@ def main(args):
                 if abs(value - median) > 2e-6:
                     print(f"Value {value} of {experiment}/{tool} differs from median {median}")
         elif all(isinstance(v, str) for v in tool_values.values()):
-            values = set(tool_values)
+            values = set(tool_values.values())
             if len(values) > 1:
-                print(f"Multiple distinct values for {experiment}: {', '.join(tool + ': ' + value for tool, value in tool_values.items())}")
+                print(f"Multiple distinct values for {experiment}: {', '.join(tool + ': ' + value for tool, value in tool_values.items())} -- {','.join(values)}")
         else:
             print(f"Different types of results for {experiment}: {', '.join(tool + ': ' + value for tool, value in tool_values.items())}")
 

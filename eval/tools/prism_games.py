@@ -61,7 +61,7 @@ class PRISMGames(PRISMTool):
             "-javamaxmem",
             f"{memory_limit - 128}m",
             "-cuddmaxmem",
-            f"{memory_limit / 2}m",
+            f"{memory_limit // 2}m",
         ]
         if constants:
             invocation.extend(
@@ -114,7 +114,7 @@ class PRISMGamesExtensions(PRISMTool):
             "-javamaxmem",
             f"{memory_limit - 128}m",
             "-cuddmaxmem",
-            f"{memory_limit / 2}m",
+            f"{memory_limit // 2}m",
         ] + self.method.invocation
         if constants:
             invocation.extend(

@@ -2,7 +2,7 @@ import base64
 import pathlib
 from functools import cached_property
 from hashlib import sha256
-from typing import Dict
+from typing import Dict, List
 import abc
 import dataclasses
 import enum
@@ -52,6 +52,9 @@ class Instance(object):
         if self.constants:
             data["constants"] = self.constants
         return data
+
+    def __str__(self):
+        return self.key
 
 
 class ErrorType(enum.Enum):
@@ -188,14 +191,15 @@ class Termination(Result):
 @dataclasses.dataclass
 class Execution(object):
     timestamp: float
+    tool_hash: int
     result: Result
 
     def to_json(self):
-        return {"timestamp": self.timestamp, "result": self.result.to_json()}
+        return {"timestamp": self.timestamp, "hash": self.tool_hash, "result": self.result.to_json()}
 
     @staticmethod
     def parse(data):
-        return Execution(data["timestamp"], Result.parse(data["result"]))
+        return Execution(data["timestamp"], data["hash"], Result.parse(data["result"]))
 
 
 @dataclasses.dataclass

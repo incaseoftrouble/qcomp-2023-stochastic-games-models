@@ -23,3 +23,8 @@ investors/investors3.prism -const vmax=40 investors/greater.props
 # task_graph/task_graph6.prism -const k1=10,k2=10 task_graph/time.props
 # task_graph/task_graph6.prism -const k1=15,k2=15 task_graph/time.props
 # task_graph/task_graph6.prism -const k1=20,k2=20 task_graph/time.props
+handcrafted/BigMec.prism -const N=1000 handcrafted/BigMec.props
+handcrafted/BigMec.prism -const N=10000 handcrafted/BigMec.props
+handcrafted/ManyMecs.prism -const N=1000 handcrafted/ManyMecs.props
+handcrafted/ManyMecs.prism -const N=10000 handcrafted/ManyMecs.props
+minigrid/square_2_adv_with_walls.prism minigrid/square_2_adv_with_walls.props
