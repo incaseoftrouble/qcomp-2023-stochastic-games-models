@@ -266,12 +266,15 @@ def main(args):
     to_execute: List[Tuple[Instance, Tool]] = []
 
     def should_execute(i: Instance, t: Tool, e: Experiment | None):
-        if e is None:
+        if args.force:
+            logger.trace("Adding %s for %s: Execution forced", i, t)
             return True
-        if args.force or t.unique_key not in e.tool_executions:
+        if e is None or t.unique_key not in e.tool_executions:
+            logger.trace("Adding %s for %s: Not executed", i, t)
             return True
         ex = e.tool_executions[tool.unique_key]
         if args.repeat_before and ex.timestamp < args.repeat_before:
+            logger.debug("Adding %s for %s: Repeating old experiment", i, t)
             return True
         if ex.tool_hash != tool_hashes[t]:
             logger.debug("Adding %s for %s: Definition hash differs", i, t)
@@ -290,7 +293,7 @@ def main(args):
         if experiment.input_hash != instance.hash:
             logger.debug("Adding %s for %s: Input hash mismatch", i, t)
             return True
-        logger.debug("Skipping %s for %s", i, t)
+        logger.trace("Skipping %s for %s", i, t)
         return False
 
     count = 0
