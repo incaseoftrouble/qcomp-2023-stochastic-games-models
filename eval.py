@@ -1,10 +1,12 @@
 import argparse
+import base64
 import datetime
 import gzip
 import inspect
 import json
 import logging
 import pathlib
+import hashlib
 import sys
 import time
 from collections import defaultdict
@@ -99,7 +101,7 @@ def run(
         pathlib.Path("/tmp/model.prism"),
         instance.constants,
         pathlib.Path("/tmp/model.props"),
-        memory
+        memory,
     )
     import docker.models.containers
 
@@ -221,7 +223,9 @@ def check_docker_images(client: docker.DockerClient, tools: Collection[Tool]):
             if tag in required_tags:
                 tools = required_tags.pop(tag)
                 for tool in tools:
-                    tool_image_ages[tool] = dateutil.parser.isoparse(image.attrs["Created"])
+                    tool_image_ages[tool] = dateutil.parser.isoparse(
+                        image.attrs["Created"]
+                    )
 
     if required_tags:
         raise KeyError(f"Images {' '.join(sorted(required_tags))} missing")
@@ -251,9 +255,13 @@ def main(args):
     client = docker.from_env()
     image_ages = check_docker_images(client, TOOLS)
 
-    class_hash = {c: hash(inspect.getsource(c)) for c in set(tool.__class__ for tool in TOOLS)}
+    class_hash = {
+        c: base64.b64encode(
+            hashlib.sha256(inspect.getsource(c).strip().encode()).digest()
+        ).decode()
+        for c in set(tool.__class__ for tool in TOOLS)
+    }
     tool_hashes = {tool: class_hash[tool.__class__] for tool in TOOLS}
-
     timeout = args.timeout
     to_execute: List[Tuple[Instance, Tool]] = []
 
@@ -272,8 +280,12 @@ def main(args):
             logger.debug("Adding %s for %s: Docker image newer than experiment", i, t)
             return True
         r = ex.result
-        if isinstance(r, Timeout) and r.time - 5 < timeout:
-            logger.debug("Adding %s for %s: Previous timeout execution smaller than timeout", i, t)
+        if isinstance(r, Timeout) and r.time < timeout:
+            logger.debug(
+                "Adding %s for %s: Previous timeout execution smaller than timeout",
+                i,
+                t,
+            )
             return True
         if experiment.input_hash != instance.hash:
             logger.debug("Adding %s for %s: Input hash mismatch", i, t)
@@ -292,18 +304,24 @@ def main(args):
         logger.info("Nothing to execute")
         return
 
-    logger.info(
-        "Executing %d out of %d instances",
-        len(to_execute), count
-    )
+    logger.info("Executing %d out of %d instances", len(to_execute), count)
 
     try:
         widgets = [
-            "Done: ", progressbar.SimpleProgress(),
+            "Done: ",
+            progressbar.SimpleProgress(),
             " --- Current: ",
-            progressbar.Variable("model", format="model {formatted_value}", width=max(len(instance.key) for instance, _ in to_execute)),
+            progressbar.Variable(
+                "model",
+                format="model {formatted_value}",
+                width=max(len(instance.key) for instance, _ in to_execute),
+            ),
             ", ",
-            progressbar.Variable("tool", format="tool {formatted_value}", width=max(len(tool.unique_key) for _, tool in to_execute)),
+            progressbar.Variable(
+                "tool",
+                format="tool {formatted_value}",
+                width=max(len(tool.unique_key) for _, tool in to_execute),
+            ),
             " ",
             progressbar.Bar(),
             " ",

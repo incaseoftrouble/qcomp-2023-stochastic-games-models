@@ -195,7 +195,11 @@ class Execution(object):
     result: Result
 
     def to_json(self):
-        return {"timestamp": self.timestamp, "hash": self.tool_hash, "result": self.result.to_json()}
+        return {
+            "timestamp": self.timestamp,
+            "hash": self.tool_hash,
+            "result": self.result.to_json(),
+        }
 
     @staticmethod
     def parse(data):
