@@ -16,15 +16,17 @@ investors/investors2.prism -const vmax=40 investors/greater.props
 investors/investors3.prism -const vmax=10 investors/greater.props
 investors/investors3.prism -const vmax=20 investors/greater.props
 investors/investors3.prism -const vmax=40 investors/greater.props
-# safe_nav/safe_nav8x8_D.prism safe_nav/reach.props
-# safe_nav/safe_nav8x8_C.prism safe_nav/reach.props
-# safe_nav/safe_nav8x8_B.prism safe_nav/reach.props
-# safe_nav/safe_nav8x8_A.prism safe_nav/reach.props
+safe_nav/safe_nav8x8_D.prism safe_nav/reach.props
+safe_nav/safe_nav8x8_C.prism safe_nav/reach.props
+safe_nav/safe_nav8x8_B.prism safe_nav/reach.props
+safe_nav/safe_nav8x8_A.prism safe_nav/reach.props
 # task_graph/task_graph6.prism -const k1=10,k2=10 task_graph/time.props
 # task_graph/task_graph6.prism -const k1=15,k2=15 task_graph/time.props
 # task_graph/task_graph6.prism -const k1=20,k2=20 task_graph/time.props
 handcrafted/BigMec.prism -const N=1000 handcrafted/BigMec.props
 handcrafted/BigMec.prism -const N=10000 handcrafted/BigMec.props
+handcrafted/BigMec.prism -const N=25000 handcrafted/BigMec.props
 handcrafted/ManyMecs.prism -const N=1000 handcrafted/ManyMecs.props
 handcrafted/ManyMecs.prism -const N=10000 handcrafted/ManyMecs.props
+handcrafted/ManyMecs.prism -const N=25000 handcrafted/ManyMecs.props
 minigrid/square_2_adv_with_walls.prism minigrid/square_2_adv_with_walls.props

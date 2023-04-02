@@ -17,7 +17,7 @@ def main(args):
         result_data = json.load(f)
     results = [Experiment.parse(d) for d in result_data]
 
-    tools = {"tempest", "pet", "prism-games-explicit", "prism-games-mtbdd", "prism-games-extension-ii", "prism-games-extension-wp", "prism-games-extension-ovi"}
+    tools = {"tempest", "pet", "pet-core", "prism-games-explicit", "prism-games-mtbdd", "prism-games-extension-ii", "prism-games-extension-wp", "prism-games-extension-ovi"}
 
     outcomes = []
     values = defaultdict(dict)
@@ -86,6 +86,7 @@ def main(args):
             "Error": "tab:red",
         },
     )
+    sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
     plt.tight_layout()
     fig.savefig("plot-success.png")
 

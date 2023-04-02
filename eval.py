@@ -50,21 +50,22 @@ TOOLS = [
 
 
 def recognize_error(stdout: str, stderr: str, exit_code: int, tool: Tool):
+    output = stdout + "\n" + stderr
     memory_errors = {
         "java.lang.OutOfMemoryError",
         "ArrayIndexOutOfBounds",
         "NegativeArraySizeException",
     }
-    if any(err in stderr for err in memory_errors):
+    if any(err in output for err in memory_errors):
         return ErrorType.OUT_OF_MEMORY
 
-    if "java.lang.StackOverflowError" in stderr:
+    if "java.lang.StackOverflowError" in output:
         return ErrorType.STACK_OVERFLOW
 
-    if "Iterative method did not converge" in stderr:
+    if "Iterative method did not converge" in output:
         return ErrorType.CONVERGENCE
 
-    if "IllegalArgumentException" in stderr:
+    if "IllegalArgumentException" in output:
         return ErrorType.INTERNAL
 
     tool_error = tool.recognize_error(stdout, stderr, exit_code)
@@ -267,10 +268,10 @@ def main(args):
 
     def should_execute(i: Instance, t: Tool, e: Experiment | None):
         if args.force:
-            logger.trace("Adding %s for %s: Execution forced", i, t)
+            logger.log(5, "Adding %s for %s: Execution forced", i, t)
             return True
         if e is None or t.unique_key not in e.tool_executions:
-            logger.trace("Adding %s for %s: Not executed", i, t)
+            logger.log(5, "Adding %s for %s: Not executed", i, t)
             return True
         ex = e.tool_executions[tool.unique_key]
         if args.repeat_before and ex.timestamp < args.repeat_before:
@@ -293,7 +294,7 @@ def main(args):
         if experiment.input_hash != instance.hash:
             logger.debug("Adding %s for %s: Input hash mismatch", i, t)
             return True
-        logger.trace("Skipping %s for %s", i, t)
+        logger.log(5, "Skipping %s for %s", i, t)
         return False
 
     count = 0
