@@ -1,6 +1,7 @@
 import argparse
 import itertools
 import json
+import tabulate
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -9,7 +10,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from eval.data import Experiment, Termination
+from eval.data import Experiment, Termination, Timeout, Error, ErrorType
 
 
 def main(args):
@@ -22,9 +23,34 @@ def main(args):
     outcomes = []
     values = defaultdict(dict)
 
+    tools_list = sorted(tools)
+    header = ["model"] + tools_list
+    table_data = []
+
     for experiment in sorted(results, key=lambda e: e.instance_key):
         if experiment.instance_key.startswith("random"):
             continue
+
+        row = [experiment.instance_key]
+        for tool in tools_list:
+            if tool not in experiment.tool_executions:
+                row.append("n/a")
+                continue
+            result = experiment.tool_executions[tool].result
+            if isinstance(result, Termination):
+                row.append(round(result.time, 1))
+            elif isinstance(result, Timeout):
+                row.append("T/O")
+            elif isinstance(result, Error):
+                if result.error_type == ErrorType.OUT_OF_MEMORY:
+                    row.append("M/O")
+                elif result.error_type == ErrorType.STACK_OVERFLOW:
+                    row.append("S/O")
+                else:
+                    row.append("ERR")
+            else:
+                row.append("?")
+        table_data.append(row)
 
         for tool, execution in experiment.tool_executions.items():
             if tool not in tools:
@@ -56,6 +82,9 @@ def main(args):
                     construction_faction
                 )
             )
+
+    print(tabulate.tabulate(table_data, headers=header, tablefmt="github"))
+    print()
 
     for experiment, tool_values in values.items():
         if all(isinstance(v, float) for v in tool_values.values()):
