@@ -1,4 +1,5 @@
 import argparse
+import csv
 import itertools
 import json
 import tabulate
@@ -18,7 +19,16 @@ def main(args):
         result_data = json.load(f)
     results = [Experiment.parse(d) for d in result_data]
 
-    tools = {"tempest", "pet", "pet-core", "prism-games-explicit", "prism-games-mtbdd", "prism-games-extension-ii", "prism-games-extension-wp", "prism-games-extension-ovi"}
+    tools = {
+        "tempest",
+        "pet",
+        "pet-core",
+        "prism-games-explicit",
+        "prism-games-mtbdd",
+        "prism-games-extension-ii",
+        "prism-games-extension-wp",
+        "prism-games-extension-ovi",
+    }
 
     outcomes = []
     values = defaultdict(dict)
@@ -38,7 +48,10 @@ def main(args):
                 continue
             result = experiment.tool_executions[tool].result
             if isinstance(result, Termination):
-                row.append(round(result.time, 1))
+                if result.outcome is not None:
+                    row.append(round(result.time, 1))
+                else:
+                    row.append("ERR?")
             elif isinstance(result, Timeout):
                 row.append("T/O")
             elif isinstance(result, Error):
@@ -79,27 +92,48 @@ def main(args):
                     execution.result.time,
                     resident_size,
                     construction_time,
-                    construction_faction
+                    construction_faction,
                 )
             )
 
     print(tabulate.tabulate(table_data, headers=header, tablefmt="github"))
     print()
+    with Path("out.csv").open(mode="wt") as f:
+        w = csv.writer(f, delimiter=",")
+        w.writerow(header)
+        w.writerows(table_data)
 
     for experiment, tool_values in values.items():
         if all(isinstance(v, float) for v in tool_values.values()):
             median = statistics.median(tool_values.values())
             for tool, value in tool_values.items():
                 if abs(value - median) > 2e-6:
-                    print(f"Value {value} of {experiment}/{tool} differs from median {median}")
+                    print(
+                        f"Value {value} of {experiment}/{tool} differs from median {median}"
+                    )
         elif all(isinstance(v, str) for v in tool_values.values()):
             values = set(tool_values.values())
             if len(values) > 1:
-                print(f"Multiple distinct values for {experiment}: {', '.join(tool + ': ' + value for tool, value in tool_values.items())} -- {','.join(values)}")
+                print(
+                    f"Multiple distinct values for {experiment}: {', '.join(tool + ': ' + str(value) for tool, value in tool_values.items())} -- {','.join(values)}"
+                )
         else:
-            print(f"Different types of results for {experiment}: {', '.join(tool + ': ' + value for tool, value in tool_values.items())}")
+            print(
+                f"Different types of results for {experiment}: {', '.join(tool + ': ' + str(value) for tool, value in tool_values.items())}"
+            )
 
-    df = pd.DataFrame(outcomes, columns=["tool", "instance", "outcome", "time", "resident", "construction", "constr_fraction"])
+    df = pd.DataFrame(
+        outcomes,
+        columns=[
+            "tool",
+            "instance",
+            "outcome",
+            "time",
+            "resident",
+            "construction",
+            "constr_fraction",
+        ],
+    )
     fig, ax = plt.subplots()
     plt.xticks(rotation=90)
     fig.set_size_inches(20, 6)
@@ -124,20 +158,25 @@ def main(args):
     sns.stripplot(data=df, x="time", y="tool", ax=ax[0, 0])
     sns.stripplot(data=df, x="resident", y="tool", ax=ax[0, 1])
     sns.stripplot(data=df, x="construction", y="tool", ax=ax[1, 0])
-    sns.stripplot(data=df, x="constr_fraction", y="tool", hue="time", palette=sns.color_palette("magma", as_cmap=True), ax=ax[1, 1])
+    sns.stripplot(
+        data=df,
+        x="constr_fraction",
+        y="tool",
+        hue="time",
+        palette=sns.color_palette("magma", as_cmap=True),
+        ax=ax[1, 1],
+    )
     plt.tight_layout()
     fig.savefig("plot-data.png")
 
-    tool_data = {
-        tool: df.query(f"tool == '{tool}'") for tool in tools
-    }
+    tool_data = {tool: df.query(f"tool == '{tool}'") for tool in tools}
 
     fig, ax = plt.subplots(len(tools), len(tools))
     fig.set_size_inches(len(tools) * 4, (len(tools)) * 4)
     for l in ax:
         for a in l:
             a.set(xlim=(0, 62), ylim=(0, 62))
-            a.set_aspect('equal', 'box')
+            a.set_aspect("equal", "box")
             a.axline((0, 0), (1, 1))
 
     index_map = {}
@@ -147,7 +186,9 @@ def main(args):
         if a == b:
             continue
         axis = ax[index_map[b], index_map[a]]
-        merge = tool_data[a].merge(right=tool_data[b], on="instance", how="inner", suffixes=(f"_{a}", f"_{b}"))
+        merge = tool_data[a].merge(
+            right=tool_data[b], on="instance", how="inner", suffixes=(f"_{a}", f"_{b}")
+        )
         sns.scatterplot(data=merge, x=f"time_{b}", y=f"time_{a}", ax=axis)
     plt.tight_layout()
     fig.savefig("plot-compare.png")

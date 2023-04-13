@@ -114,16 +114,16 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers()
 
     prism = subparsers.add_parser("prism")
-    prism.add_argument(
-        "benchmarks", type=Path, help="Path prism benchmarks txt"
-    )
+    prism.add_argument("benchmarks", type=Path, help="Path prism benchmarks txt")
     prism.add_argument(
         "--path", type=Path, help="Base path for models", default=Path(".")
     )
     prism.set_defaults(func=load_prism)
 
     random = subparsers.add_parser("random")
-    random.add_argument("--folder", type=Path, help="Base folder of random models", required=True)
+    random.add_argument(
+        "--folder", type=Path, help="Base folder of random models", required=True
+    )
     random.set_defaults(func=load_random)
 
     a = parser.parse_args()

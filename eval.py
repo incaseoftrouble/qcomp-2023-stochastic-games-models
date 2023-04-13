@@ -38,7 +38,7 @@ logger = logging.getLogger("main")
 logger.setLevel(logging.DEBUG)
 
 TOOLS = [
-    PET(True),
+    # PET(True),
     PET(False),
     PRISMGames("explicit"),
     PRISMGames("mtbdd"),
@@ -72,6 +72,9 @@ def recognize_error(stdout: str, stderr: str, exit_code: int, tool: Tool):
     if tool_error is not None:
         return tool_error
 
+    if not exit_code:
+        return None
+
     logger.warning(
         f"Unrecognized error for tool %s, code %s\n"
         f"=== Stdout ===\n"
@@ -88,11 +91,11 @@ def recognize_error(stdout: str, stderr: str, exit_code: int, tool: Tool):
 
 
 def run(
-        client: docker.DockerClient,
-        tool: Tool,
-        instance: Instance,
-        memory: int,
-        timeout: float,
+    client: docker.DockerClient,
+    tool: Tool,
+    instance: Instance,
+    memory: int,
+    timeout: float,
 ) -> Result:
     assert memory > 1024
 
@@ -109,13 +112,13 @@ def run(
     container: docker.models.containers.Container = client.containers.create(
         image=tool.docker_image_name,
         command=[
-                    "/usr/bin/timeout",
-                    str(timeout + 1),
-                    "/usr/bin/time",
-                    "-f",
-                    "%C\n%x,%e,%U,%M",
-                ]
-                + invocation,
+            "/usr/bin/timeout",
+            str(timeout + 1),
+            "/usr/bin/time",
+            "-f",
+            "%C\n%x,%e,%U,%M",
+        ]
+        + invocation,
         cpuset_cpus="1",
         mem_limit=f"{memory}m",
         mem_swappiness=0,
@@ -174,8 +177,9 @@ def run(
                 exit_code,
             )
 
-        if exit_code:
-            error_type: ErrorType = recognize_error(stdout, stderr, exit_code, tool)
+        # Some tools don't set exit code properly
+        error_type: ErrorType = recognize_error(stdout, stderr, exit_code, tool)
+        if error_type:
             return Error(stdout, stderr, duration, exit_code, error_type)
 
         try:
@@ -200,9 +204,9 @@ def run(
         try:
             container.wait(timeout=10)
         except (
-                docker.errors.APIError,
-                requests.exceptions.ReadTimeout,
-                requests.exceptions.ConnectionError,
+            docker.errors.APIError,
+            requests.exceptions.ReadTimeout,
+            requests.exceptions.ConnectionError,
         ):
             pass
         try:
@@ -334,11 +338,11 @@ def main(args):
             progressbar.ETA(),
         ]
         with progressbar.ProgressBar(
-                min_value=0,
-                max_value=len(to_execute),
-                redirect_stdout=True,
-                widgets=widgets,
-                poll_interval=0.1,
+            min_value=0,
+            max_value=len(to_execute),
+            redirect_stdout=True,
+            widgets=widgets,
+            poll_interval=0.1,
         ) as bar:
             for i, (instance, tool) in enumerate(to_execute):
                 bar.update(i, model=instance.key, tool=tool.unique_key)
