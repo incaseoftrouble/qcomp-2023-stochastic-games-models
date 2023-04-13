@@ -296,7 +296,7 @@ def main(args):
             )
             return True
         if experiment.input_hash != instance.hash:
-            logger.debug("Adding %s for %s: Input hash mismatch", i, t)
+            logger.debug("Adding %s for %s: Input hash mismatch (%s vs %s)", i, t, experiment.input_hash, instance.hash)
             return True
         logger.log(5, "Skipping %s for %s", i, t)
         return False
@@ -353,6 +353,7 @@ def main(args):
                     experiments[instance.key] = Experiment(
                         instance.key, instance.hash, dict()
                     )
+                experiments[instance.key].input_hash = instance.hash
                 experiments[instance.key].tool_executions[tool.unique_key] = execution
     except KeyboardInterrupt:
         logger.info("Caught interrupt, writing current results")
